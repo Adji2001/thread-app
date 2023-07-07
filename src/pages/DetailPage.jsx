@@ -3,18 +3,24 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { asyncReceiveThreadDetail } from "../states/threadDetail/action";
 import ThreadDetail from "../components/ThreadDetail";
-import api from "../utils/api";
 import CommentsList from "../components/CommentsList";
+import { asyncAddComment } from "../states/threadComment/action";
+// import { asyncReceiveComment } from "../states/threadComment/action";
 
 const DetailPage = () => {
   const { id } = useParams();
-  const { detailThread = null } = useSelector((states) => states);
+  const { detailThread = null, authUser } = useSelector((states) => states);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(asyncReceiveThreadDetail(id));
-    console.log(detailThread);
+    // dispatch(asyncReceiveComment(detailThread));
   }, [id, dispatch]);
+
+  const onAddComment = ({ content }) => {
+    dispatch(asyncAddComment({ content }));
+    dispatch(asyncReceiveThreadDetail(id));
+  };
 
   if (!detailThread) {
     return null;
@@ -22,12 +28,15 @@ const DetailPage = () => {
 
   return (
     <div className="w-full pt-5 px-3 text-slate-100 max-h-full overflow-y-auto">
-      <ThreadDetail {...detailThread} />
-      {detailThread.comments.length > 0 && (
-        <div className="w-full display" id="commentList">
-          <CommentsList comments={detailThread.comments} />
-        </div>
-      )}
+      <ThreadDetail {...detailThread} authUser={authUser.id} />
+      <div className="w-full" id="commentList">
+        <CommentsList
+          addComment={onAddComment}
+          comments={detailThread.comments}
+          threadId={detailThread.id}
+          authUser={authUser ? authUser.id : null}
+        />
+      </div>
     </div>
   );
 };

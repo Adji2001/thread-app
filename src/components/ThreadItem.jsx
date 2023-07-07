@@ -17,6 +17,14 @@ const ThreadItem = ({
   totalComments,
   user,
 }) => {
+  // let harga = [5000, 1000, 2000, 6000];
+  let like = upVotesBy.reduce((val, nilaiSekarang) => {
+    return val + nilaiSekarang;
+  }, 0);
+
+  console.log("votes: ", upVotesBy);
+  console.log("like: ", like);
+
   return (
     <div className="border-t-2 border-slate-600 pb-5 px-3 pt-3">
       {/* profile */}
@@ -30,12 +38,12 @@ const ThreadItem = ({
       {/* body */}
       <div className="mt-2">
         <Link
-          className="text-2xl text-blue-200 font-bold"
+          className="text-2xl text-blue-200 font-bold dotsTitle"
           to={`/threads/${id}`}
         >
           {title}
         </Link>
-        <p>{HTMLReactParser(body)}</p>
+        <p className="dotsBody">{HTMLReactParser(body)}</p>
         <div className="my-3 flex gap-2">
           <TagItem text={category} />
         </div>

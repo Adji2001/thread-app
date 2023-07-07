@@ -3,7 +3,14 @@ import { postedAt } from "../utils";
 import { AiOutlineDislike, AiTwotoneLike } from "react-icons/ai";
 import HTMLReactParser from "html-react-parser";
 
-const CommentItem = ({ owner, content, createdAt, upVotesBy, downVotesBy }) => {
+const CommentItem = ({
+  owner,
+  content,
+  createdAt,
+  upVotesBy,
+  downVotesBy,
+  authUser,
+}) => {
   return (
     <div className="my-5">
       {/* profile */}

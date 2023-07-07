@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import ThreadPage from "./pages/ThreadPage";
@@ -10,8 +8,9 @@ import DetailPage from "./pages/DetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { useDispatch, useSelector } from "react-redux";
-import { asyncSetAuthUser } from "./states/authUser/action";
+import { asyncUnsetAuthUser } from "./states/authUser/action";
 import { asyncPreloadProccess } from "./states/isPreload/action";
+import Loading from "./components/Loading";
 
 function App() {
   // const [authUser, setAuthUser] = useState(null);
@@ -25,31 +24,41 @@ function App() {
     dispatch(asyncPreloadProccess());
   }, [dispatch]);
 
+  const onLogout = () => {
+    dispatch(asyncUnsetAuthUser());
+  };
+
   if (isPreload) {
     return null;
   }
 
   if (authUser === null) {
     return (
-      <div className="w-6/12 m-auto h-[100vh] flex">
-        <Routes>
-          <Route path="/*" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-      </div>
+      <>
+        <Loading />
+        <div className="w-6/12 m-auto h-[100vh] flex">
+          <Routes>
+            <Route path="/*" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="w-10/12 m-auto bg-slate-900 h-[100vh] flex">
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<ThreadPage />} />
-        <Route path="/leaderboard" element={<LeaderboardPage />} />
-        <Route path="/create" element={<CreatePage />} />
-        <Route path="/threads/:id" element={<DetailPage />} />
-      </Routes>
-    </div>
+    <>
+      <Loading />
+      <div className="w-10/12 m-auto bg-slate-900 h-[100vh] flex">
+        <Navbar authUser={authUser} logout={onLogout} />
+        <Routes>
+          <Route path="/" element={<ThreadPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/create" element={<CreatePage />} />
+          <Route path="/threads/:id" element={<DetailPage />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 

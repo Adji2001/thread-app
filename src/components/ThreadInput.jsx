@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import useInput from "../hooks/useInput";
 import { useDispatch } from "react-redux";
 import { asyncAddThread } from "../states/threads/action";
+import { useNavigate } from "react-router-dom";
 
 const ThreadInput = () => {
   const [title, setTitle, handleTitle] = useInput();
   const [category, setCategory, handleCategory] = useInput();
   const [body, setBody] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function addThread(e) {
     e.preventDefault();
@@ -15,6 +17,7 @@ const ThreadInput = () => {
     setTitle("");
     setCategory("");
     setBody("");
+    navigate("/");
   }
 
   return (

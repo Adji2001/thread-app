@@ -23,4 +23,21 @@ body {
   color: rgb(237, 89, 89);
 }
 
+.dotsBody {
+  max-height: 300px;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+.dotsTitle {
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
 @tailwind utilities;

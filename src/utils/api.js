@@ -3,7 +3,7 @@ const api = (() => {
 
     // fetch dengan authentication
     async function fetchWithAuth(url, options = {}) {
-        await fetch(url, {
+        return await fetch(url, {
             ...options,
             headers: {
                 ...options.headers,
@@ -19,7 +19,7 @@ const api = (() => {
 
     // mengambil access token
     function getAccessToken() {
-        localStorage.getItem('accessToken')
+        return localStorage.getItem('accessToken')
     }
 
     // registrasi pengguna baru
@@ -183,6 +183,18 @@ const api = (() => {
                 content
             })
         })
+
+        const responseJSON = await response.json()
+
+        const {status, message} = responseJSON
+
+        if(status !== 'success') {
+            throw new Error(message)
+        }
+
+        const {data: {comment}} = responseJSON
+
+        return comment
     }
 
     // menampilkan semua leaderboards
@@ -202,6 +214,63 @@ const api = (() => {
         return leaderboards
     }
 
+    // tambah like vote thread
+    async function upVoteThread(threadId) {
+        const response = await fetchWithAuth(`${BASEURL}/threads/${threadId}/up-vote`, {
+            method: 'POST',
+        })
+
+        const responseJSON = await response.json()
+
+        const {status, message} = responseJSON
+
+        if(status !== 'success') {
+            throw new Error(message)
+        }
+
+        const {data: {vote}} = responseJSON
+
+        return vote
+    }
+
+    // tambah dislike vote thread
+    async function downVoteThread(threadId) {
+        const response = await fetchWithAuth(`${BASEURL}/threads/${threadId}/down-vote`, {
+            method: 'POST'
+        })
+
+        const responseJSON = await response.json() 
+
+        const {status, message} = responseJSON
+
+        if(status !== 'success') {
+            throw new Error(message)
+        }
+
+        const {data: {vote}} = responseJSON
+
+        return vote
+    }
+
+    // menaturalkan vote thread
+    async function neutralizeThreadVote(threadId) {
+        const response = await fetchWithAuth(`${BASEURL}/threads/${threadId}/neutral-vote`, {
+            method: 'POST'
+        })
+
+        const responseJSON = await response.json()
+
+        const {status, message} = responseJSON
+
+        if(status !== 'success') {
+            throw new Error(message)
+        }
+
+        const {data: {vote}} = responseJSON
+
+        return vote
+    }
+
     return {
         putAccessToken,
         getAccessToken,
@@ -214,6 +283,9 @@ const api = (() => {
         getThreadDetail,
         createComment,
         getAllLeaderboards,
+        upVoteThread,
+        downVoteThread,
+        neutralizeThreadVote,
     }
 })()
 

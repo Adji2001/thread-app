@@ -1,13 +1,13 @@
 import { ActionType } from "./action";
 
-function authUserReducer(authUer = null, action = {}) {
+function authUserReducer(authUser = null, action = {}) {
     switch (action.type) {
         case ActionType.SET_AUTH_USER:
-            return action.payload.authUer;
+            return action.payload.authUser;
         case ActionType.UNSET_AUTH_USER:
             return null;
         default:
-            return authUer;
+            return authUser;
     }
 }
 

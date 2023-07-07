@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { AiTwotoneDislike, AiTwotoneLike } from "react-icons/ai";
 import { FaCommentDots } from "react-icons/fa";
 import { postedAt } from "../utils";
 import HTMLReactParser from "html-react-parser";
 import TagItem from "./TagItem";
+import api from "../utils/api";
+import { useDispatch } from "react-redux";
+import { asyncUpVoteThread } from "../states/threads/action";
 
 const ThreadDetail = ({
+  id,
   title,
   body,
   category = "",
@@ -14,19 +18,80 @@ const ThreadDetail = ({
   upVotesBy,
   downVotesBy,
   comments,
+  authUser,
 }) => {
-  const toggleBlue = () => {
-    document.getElementById("blueLike").classList.toggle("blueLike");
+  // var like dan dislike
+  const [like, setLike] = useState(false);
+  const [dislike, setDislike] = useState(false);
+  // const [upVote, setUpVote] = useState(upVotesBy);
+  const dispatch = useDispatch();
+  const isUpVote = upVotesBy.includes(authUser);
+
+  // console.log("upVotes: ", upVote);
+
+  // logika like
+  // const toggleBlue = async () => {
+  //   const vote = await api.upVoteThread(id);
+  //   setUpVote([...upVotesBy, vote.userId]);
+  //   console.log("vote", vote);
+
+  //   if (like === false && dislike === false) {
+  //     document.getElementById("blueLike").classList.add("blueLike");
+  //     document.getElementById("redLike").classList.remove("redLike");
+  //     setLike(true);
+  //   }
+
+  //   if (like === true && dislike === false) {
+  //     document.getElementById("blueLike").classList.remove("blueLike");
+  //     setLike(false);
+  //   }
+
+  //   if (dislike === true) {
+  //     document.getElementById("blueLike").classList.add("blueLike");
+  //     document.getElementById("redLike").classList.remove("redLike");
+  //     setDislike(false);
+  //     setLike(true);
+  //   }
+  // };
+  const toggleBlue = (e) => {
+    e.stopPropagation();
+    dispatch(asyncUpVoteThread(id));
   };
 
+  // logika dislike
   const toggleRed = () => {
-    document.getElementById("redLike").classList.toggle("redLike");
+    if (like === false && dislike === false) {
+      document.getElementById("redLike").classList.add("redLike");
+      document.getElementById("blueLike").classList.remove("blueLike");
+      setDislike(true);
+    }
+
+    if (like === false && dislike === true) {
+      document.getElementById("redLike").classList.remove("redLike");
+      setDislike(false);
+    }
+
+    if (like === true) {
+      document.getElementById("redLike").classList.add("redLike");
+      document.getElementById("blueLike").classList.remove("blueLike");
+      setLike(false);
+      setDislike(true);
+    }
   };
 
-  const toggleDisplay = () => {
-    const comments = document.getElementById("commentList");
-    comments.classList.toggle("display");
-  };
+  // console.log("like: ", like);
+  // console.log("dislike: ", dislike);
+
+  // const toggleDisplay = () => {
+  //   const comments = document.getElementById("commentList");
+  //   comments.classList.toggle("display");
+  // };
+
+  // let harga = [5000, 1000, 2000, 6000];
+  // let total = harga.reduce((val, nilaiSekarang) => {
+  //   return val + nilaiSekarang;
+  // }, 0);
+  // console.log(total);
 
   return (
     <div>
@@ -49,14 +114,21 @@ const ThreadDetail = ({
       {/* footer */}
       <div className="flex items-center gap-5">
         <button onClick={toggleBlue}>
-          <AiTwotoneLike className="text-xl inline-block" id="blueLike" />{" "}
+          {isUpVote ? (
+            <AiTwotoneLike
+              className="text-xl inline-block text-blue-500"
+              id="blueLike"
+            />
+          ) : (
+            <AiTwotoneLike className="text-xl inline-block" id="blueLike" />
+          )}{" "}
           {upVotesBy.length}
         </button>
         <button onClick={toggleRed}>
           <AiTwotoneDislike className="text-xl inline-block" id="redLike" />{" "}
           {downVotesBy.length}
         </button>
-        <button onClick={toggleDisplay}>
+        <button>
           <FaCommentDots className="text-xl inline-block" /> See comments (
           {comments.length})
         </button>
